@@ -2,7 +2,7 @@
 
 # graylog-golang
 
-## graylog-golang is a full implementation for sending messages in GELF (Graylog Extended Log Format) from Google Go (Golang) to Graylog
+## graylog-golang is a full implementation for sending messages in GELF (Graylog Extended Log Format) from Go (Golang) to Graylog
 
 
 # Example
@@ -21,9 +21,9 @@ func main() {
   g.Log(`{
       "version": "1.0",
       "host": "localhost",
-      "timestamp": 56765675675,
+      "timestamp": 1356262644,
       "facility": "Google Go",
-      "short_message": "Hello From Golang! PACKAGE TEST"
+      "short_message": "Hello From Golang!"
   }`)
 }
 ```
@@ -43,4 +43,9 @@ g := New(Config{
 # Tests
 ```
 go test
+```
+
+# Benchmarks
+```
+go test --bench=".*"
 ```
