@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/robertkowalski/graylog-golang.png?branch=master)](https://travis-ci.org/robertkowalski/graylog-golang)
+
 # graylog-golang
 
 ## graylog-golang is a full implementation for sending messages in GELF (Graylog Extended Log Format) from Google Go (Golang) to Graylog
