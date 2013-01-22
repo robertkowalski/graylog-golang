@@ -31,7 +31,7 @@ func main() {
 # Setting Config Values
 
 ```go
-g := New(Config{
+g := gelf.New(Config{
   GraylogPort:     80,
   GraylogHostname: "example.com",
   Connection:      "wan",
