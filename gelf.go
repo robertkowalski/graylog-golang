@@ -73,9 +73,8 @@ func (g *Gelf) Log(message string) {
 	length := compressed.Len()
 
 	if length > chunksize {
-		chunkCountInt := length / chunksize
-		chunkCount := math.Ceil(float64(chunkCountInt))
-		chunkCountInt = int(chunkCount) + 1
+		
+		chunkCountInt := math.Ceil(float64(length)/float64(chunksize))
 
 		id := make([]byte, 8)
 		rand.Read(id)
