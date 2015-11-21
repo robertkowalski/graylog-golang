@@ -3,12 +3,15 @@ package gelf
 import (
 	"bytes"
 	"encoding/binary"
-	"github.com/bmizerany/assert"
 	"net"
 	"reflect"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
+
+	"github.com/bmizerany/assert"
+	"github.com/lintianzhi/graylogd"
 )
 
 var validJson = `{
@@ -157,6 +160,49 @@ func Test_CreateChunkedMessages_itShouldStartWithTheMagicNumber(t *testing.T) {
 	res := packet.String()
 
 	assert.Equal(t, strings.Contains(res, "\x1e\x0f"), true)
+}
+
+func Test_ChunkSize(t *testing.T) {
+
+	waitChan := make(chan bool, 1)
+	var realB []byte
+	daeCfg := graylogd.Config{
+		ListenAddr: "127.0.0.1:2211",
+		HandleRaw: func(b []byte) {
+			assert.Equal(t, realB, b)
+			waitChan <- true
+		},
+		HandleError: func(addr *net.UDPAddr, err error) {
+			t.Fatal("should be no error", err)
+		},
+	}
+	logd, err := graylogd.NewGraylogd(daeCfg)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, nil, logd.Run())
+	defer logd.Close()
+
+	client := New(Config{
+		GraylogPort:     2211,
+		GraylogHostname: "127.0.0.1",
+		MaxChunkSizeWan: 1,
+		MaxChunkSizeLan: 1,
+	})
+
+	msgs := []string{
+		"11111",
+		"123jjdd",
+	}
+	for _, msg := range msgs {
+
+		realB = []byte(msg)
+
+		client.Log(msg)
+		select {
+		case <-waitChan:
+		case <-time.After(time.Second):
+			t.Fatal("message is not received")
+		}
+	}
 }
 
 func Test_CreateChunkedMessages_itShouldContainAnId(t *testing.T) {
