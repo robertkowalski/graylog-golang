@@ -81,7 +81,10 @@ func (g *Gelf) Log(message string) error {
 
 		for i, index := 0, 0; i < length; i, index = i+chunksize, index+1 {
 			packet := g.CreateChunkedMessage(index, chunkCountInt, id, &compressed)
-			return g.Send(packet.Bytes())
+			err = g.Send(packet.Bytes())
+			if err != nil {
+				return err
+			}
 		}
 
 	} else {
