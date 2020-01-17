@@ -159,6 +159,7 @@ func (g *Gelf) TestForForbiddenValues(gmap map[string]interface{}) error {
 func (g *Gelf) Send(b []byte) {
 	var addr = g.Config.GraylogHostname + ":" + strconv.Itoa(g.Config.GraylogPort)
 	conn, err := net.Dial("udp", addr)
+	defer conn.Close()
 	if err != nil {
 		log.Printf("Uh oh! %s", err)
 		return
